@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    ports:
+      - "30:3000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  mongodb:
+    image: mongo:5.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodatahw:/data/datadb
+    healthcheck:
+      test: echo 'db.runCommand( "ping").ok' | mongo localhost/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongodatahw:
